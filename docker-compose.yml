@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  authcore-db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: authcoredb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: authcore
+      MYSQL_PASSWORD: authcore
+    ports:
+      - "3306:3306"
+    volumes:
+      - authcore-db-data:/var/lib/mysql
+
+  authcore-service:
+    build: .
+    depends_on:
+      - authcore-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://authcore-db:3306/authcoredb?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: authcore
+      SPRING_DATASOURCE_PASSWORD: authcore
+      JWT_SECRET_BASE64: ${JWT_SECRET_BASE64:?Define JWT_SECRET_BASE64 en el archivo .env}
+    ports:
+      - "8081:8081"
+
+volumes:
+  authcore-db-data:
