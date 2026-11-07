@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Plantilla de infraestructura para el laboratorio de Spring Boot: S3 e IAM'
+
+Resources:
+  # 1. Creación del Bucket de S3
+  MiBucketDeEvidencia:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'lab-iam-unipamplona-2026-hernandez-leon'
+
+  # 2. Creación del Usuario IAM
+  UsuarioEstudiante:
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName: 'estudiante01'
+
+  # 3. Asignación de la Política de Permisos al Usuario
+  PoliticaAccesoS3:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: 'PermisosS3Estudiante'
+      Users:
+        - !Ref UsuarioEstudiante
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: 'PermitirVerListaDeBuckets'
+            Effect: 'Allow'
+            Action: 's3:ListAllMyBuckets'
+            Resource: '*'
+          - Sid: 'PermitirListarBucket'
+            Effect: 'Allow'
+            Action: 's3:ListBucket'
+            Resource: !Sub 'arn:aws:s3:::${MiBucketDeEvidencia}'
+          - Sid: 'PermitirLeerYSubirObjetos'
+            Effect: 'Allow'
+            Action:
+              - 's3:GetObject'
+              - 's3:PutObject'
+            Resource: !Sub 'arn:aws:s3:::${MiBucketDeEvidencia}/*'

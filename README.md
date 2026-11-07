@@ -18,7 +18,8 @@ Java 21 · Spring Boot · Spring Security · Gradle · MySQL · jjwt 0.12.6 · a
 | HU-6 | JWT con firma y expiración configurable | `authcore.jwt.expiration-ms` (`JWT_EXPIRATION_MS`) |
 | HU-7 | Dominio separado de la infraestructura | `domain/`, `application/ports`, `infrastructure/adapters` |
 
-El backlog está en [`docs/`](docs/).
+El backlog está en [`docs/`](docs/). La plantilla CloudFormation del laboratorio de AWS (S3 e IAM) está en
+[`docs/aws/`](docs/aws/infraestructura.yaml).
 
 ## Arquitectura
 
@@ -62,4 +63,4 @@ cambie su contraseña antes de exponer el servicio.
 |---|---|
 | **Chronos-AuthCore** (este) | Autenticación y roles (HU-1 a HU-7), puerto 8081 |
 | [Chronos-Domain-Service](https://github.com/Jhorm4nnn/Chronos-Domain-Service) | Agenda de turnos (HU-8 a HU-12), puerto 8082 |
-| [Crhonos-Sistema_de_Turnos](https://github.com/Jhorm4nnn/Crhonos-Sistema_de_Turnos) | Repositorio original del proyecto y documentación |
+| [Crhonos-Sistema_de_Turnos](https://github.com/Jhorm4nnn/Crhonos-Sistema_de_Turnos) | Repositorio original, reemplazado por estos dos |
