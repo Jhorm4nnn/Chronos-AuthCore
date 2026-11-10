@@ -92,6 +92,13 @@ El despliegue de todo Chronos (MySQL, AuthCore y Domain Service en una instancia
 [`despliegue/` del Domain Service](https://github.com/Jhorm4nnn/Chronos-Domain-Service/tree/main/despliegue), con
 su guía en el README de ese repositorio. Este repositorio aporta su [`Dockerfile`](Dockerfile).
 
+## Gestión del proyecto
+
+El tablero de Trello del proyecto (backlog, sprints e historias de los dos servicios) es
+[Chronos · Sistema de Turnos (Grupo 5)](https://trello.com/b/JqZOzIz4/chronos-sistema-de-turnos-grupo-5); su
+organización está documentada en
+[`docs/gestion/` del Domain Service](https://github.com/Jhorm4nnn/Chronos-Domain-Service/blob/main/docs/gestion/tablero-trello.md).
+
 ## Proyecto Chronos — repositorios relacionados
 
 | Repositorio | Contenido |
