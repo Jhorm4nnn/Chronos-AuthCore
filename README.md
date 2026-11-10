@@ -4,7 +4,7 @@ Servicio de autenticación del proyecto **Chronos** (Ingeniería del Software II
 Registra usuarios, autentica con BCrypt y emite un **JWT firmado (HS384)** que el
 [Chronos-Domain-Service](https://github.com/Jhorm4nnn/Chronos-Domain-Service) valida localmente con el mismo secreto.
 
-Java 21 · Spring Boot 4.1.1 · Spring Security · Gradle 9.9 (wrapper) · MySQL · jjwt 0.12.6 · arquitectura hexagonal
+Java 21 · Spring Boot 4.1.1 · Spring Security · Gradle 8.14 (wrapper; NetBeans 25 aún no soporta Gradle 9) · MySQL · jjwt 0.12.6 · arquitectura hexagonal
 (paquete `com.pamplona.authcore`).
 
 ## Historias de usuario (HU-1 a HU-7)
