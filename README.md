@@ -66,6 +66,26 @@ H2 en memoria y valores que solo sirven para las pruebas.
 Con Docker, solo AuthCore y su MySQL para desarrollo local: cree `.env` (ignorado por git) con las variables de
 [`docker-compose.yml`](docker-compose.yml) y ejecute `docker compose up --build`.
 
+## Ejecutar en local (NetBeans u otro IDE)
+
+NetBeans ejecuta este proyecto con `bootRun` (*Run Project*). Al arrancar se lee el archivo `.env` de la carpeta del
+proyecto, si existe (está en `.gitignore`; nunca se sube), así que no hace falta configurar variables en el IDE.
+Para probar sin MySQL, use H2 en memoria (disponible solo en `bootRun`, no en el jar de producción):
+
+```properties
+JWT_SECRET_BASE64=<secreto Base64 de 48 bytes, el mismo del Domain Service>
+spring.datasource.url=jdbc:h2:mem:authcore;MODE=MySQL;DB_CLOSE_DELAY=-1
+spring.datasource.username=sa
+spring.datasource.password=
+spring.datasource.driver-class-name=org.h2.Driver
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=<8+ caracteres, con letras y números>
+```
+
+Para usar su MySQL local, cambie las líneas `spring.datasource.*` por `SPRING_DATASOURCE_URL`,
+`SPRING_DATASOURCE_USERNAME` y `SPRING_DATASOURCE_PASSWORD`, y quite las de H2.
+
 ## Desplegar en AWS
 
 El despliegue de todo Chronos (MySQL, AuthCore y Domain Service en una instancia EC2 con Docker Compose) está en
