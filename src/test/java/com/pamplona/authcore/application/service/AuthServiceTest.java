@@ -5,56 +5,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.pamplona.authcore.application.exception.InvalidCredentialsException;
 import com.pamplona.authcore.application.exception.UserAlreadyExistsException;
 import com.pamplona.authcore.application.exception.UserNotFoundException;
-import com.pamplona.authcore.application.ports.out.PasswordHasherPort;
-import com.pamplona.authcore.application.ports.out.TokenProviderPort;
-import com.pamplona.authcore.application.ports.out.UserRepositoryPort;
 import com.pamplona.authcore.domain.Role;
 import com.pamplona.authcore.domain.User;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.pamplona.authcore.testsupport.Dobles.HasherFalso;
+import com.pamplona.authcore.testsupport.Dobles.RepositorioEnMemoria;
+import com.pamplona.authcore.testsupport.Dobles.TokensFalsos;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /** Casos de uso de AuthService con dobles en memoria: sin Spring, sin base de datos. */
 class AuthServiceTest {
-
-    /** Repositorio en memoria que asigna ids como lo haría la base de datos. */
-    static class RepositorioEnMemoria implements UserRepositoryPort {
-        final List<User> usuarios = new ArrayList<>();
-
-        public User save(User user) {
-            if (user.getId() == null) {
-                user.setId((long) usuarios.size() + 1);
-                usuarios.add(user);
-            } else {
-                usuarios.replaceAll(u -> u.getId().equals(user.getId()) ? user : u);
-            }
-            return user;
-        }
-
-        public Optional<User> findByUsername(String username) {
-            return usuarios.stream().filter(u -> u.getUsername().equals(username)).findFirst();
-        }
-
-        public Optional<User> findById(Long id) {
-            return usuarios.stream().filter(u -> u.getId().equals(id)).findFirst();
-        }
-
-        public List<User> findAll() {
-            return List.copyOf(usuarios);
-        }
-    }
-
-    /** Hash de mentiras: suficiente para probar que el servicio nunca guarda la contraseña en claro. */
-    static class HasherFalso implements PasswordHasherPort {
-        public String hash(String raw) { return "hash:" + raw; }
-        public boolean matches(String raw, String hashed) { return hashed.equals("hash:" + raw); }
-    }
-
-    static class TokensFalsos implements TokenProviderPort {
-        public String generateToken(User user) { return "token-de-" + user.getUsername(); }
-    }
 
     private final RepositorioEnMemoria repo = new RepositorioEnMemoria();
     private final AuthService servicio = new AuthService(repo, new HasherFalso(), new TokensFalsos());

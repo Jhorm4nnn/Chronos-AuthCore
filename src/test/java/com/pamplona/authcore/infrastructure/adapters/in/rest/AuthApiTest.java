@@ -96,6 +96,15 @@ class AuthApiTest {
     }
 
     @Test
+    void elAdministradorInicialEntraConRolAdmin() throws Exception {
+        String cuerpo = postJson("/api/auth/login", "{\"username\":\"admin.pruebas\",\"password\":\"PruebaAdmin1\"}")
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        Claims claims = Jwts.parser().verifyWith(clave()).build()
+                .parseSignedClaims(JsonPath.read(cuerpo, "$.token")).getPayload();
+        assertEquals(true, claims.get("roles", List.class).contains("ADMIN"));
+    }
+
+    @Test
     void loginInvalidoDa401() throws Exception {
         postJson("/api/auth/login", "{\"username\":\"nadie\",\"password\":\"Clave1234\"}").andExpect(status().isUnauthorized());
     }

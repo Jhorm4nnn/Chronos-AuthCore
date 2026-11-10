@@ -24,3 +24,7 @@ authcore:
     # Sin esta variable la aplicacion no arranca, a proposito.
     secret-base64: ${JWT_SECRET_BASE64}
     expiration-ms: ${JWT_EXPIRATION_MS:3600000}
+  admin:
+    # Administrador inicial: se crea al arrancar si no existe. Sin estas variables no se crea ninguno.
+    username: ${ADMIN_USERNAME:}
+    password: ${ADMIN_PASSWORD:}
