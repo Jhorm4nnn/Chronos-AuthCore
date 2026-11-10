@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: authcore-service
+  # Para ejecutar en local (por ejemplo desde NetBeans): si existe un archivo .env en la carpeta del proyecto,
+  # sus valores (CLAVE=valor) se usan como configuración. Ese archivo está en .gitignore y nunca se sube.
+  config:
+    import: optional:file:.env[.properties]
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/authcore_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
     # Credenciales SOLO por variables de entorno: nunca se escriben en el repositorio.
@@ -24,3 +28,7 @@ authcore:
     # Sin esta variable la aplicacion no arranca, a proposito.
     secret-base64: ${JWT_SECRET_BASE64}
     expiration-ms: ${JWT_EXPIRATION_MS:3600000}
+  admin:
+    # Administrador inicial: se crea al arrancar si no existe. Sin estas variables no se crea ninguno.
+    username: ${ADMIN_USERNAME:}
+    password: ${ADMIN_PASSWORD:}

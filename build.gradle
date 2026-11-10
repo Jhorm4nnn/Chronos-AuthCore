@@ -30,6 +30,9 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'com.h2database:h2'
+    // H2 solo al ejecutar desde el IDE o con bootRun (no entra en el jar de producción): permite probar sin MySQL.
+    developmentOnly 'com.h2database:h2'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

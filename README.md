@@ -4,13 +4,14 @@ Servicio de autenticación del proyecto **Chronos** (Ingeniería del Software II
 Registra usuarios, autentica con BCrypt y emite un **JWT firmado (HS384)** que el
 [Chronos-Domain-Service](https://github.com/Jhorm4nnn/Chronos-Domain-Service) valida localmente con el mismo secreto.
 
-Java 21 · Spring Boot · Spring Security · Gradle · MySQL · jjwt 0.12.6 · arquitectura hexagonal (paquete `com.pamplona.authcore`).
+Java 21 · Spring Boot 4.1.1 · Spring Security · Gradle 9.9 (wrapper) · MySQL · jjwt 0.12.6 · arquitectura hexagonal
+(paquete `com.pamplona.authcore`).
 
 ## Historias de usuario (HU-1 a HU-7)
 
 | HU | Qué hace | Dónde |
 |---|---|---|
-| HU-1 | Registro de usuario (rol USER por defecto) | `RegisterUserUseCase`, `AuthService`, `POST /api/auth/register` |
+| HU-1 | Registro de usuario (rol USER por defecto; contraseña de 8+ caracteres con letras y números) | `RegisterUserUseCase`, `AuthService`, `PasswordPolicy`, `POST /api/auth/register` |
 | HU-2 | Login → JWT con `uid` y `roles` | `LoginUseCase`, `JwtTokenProviderAdapter`, `POST /api/auth/login` |
 | HU-3 | Asignar rol (solo ADMIN) | `AssignRoleUseCase`, `POST /api/auth/users/{id}/roles` |
 | HU-4 | Acceso por rol (401 / 403) | `SecurityConfig`, `JwtAuthenticationFilter` |
@@ -37,6 +38,7 @@ infrastructure/  REST (in), JPA + BCrypt + JWT (out), configuración de segurida
 | `SPRING_DATASOURCE_URL` | Opcional; por defecto `jdbc:mysql://localhost:3306/authcore_db` |
 | `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD` | Credenciales de MySQL. **Obligatorias** |
 | `JWT_EXPIRATION_MS` | Vigencia del token, por defecto 3600000 (1 h) |
+| `ADMIN_USERNAME` / `ADMIN_PASSWORD` | Administrador inicial, se crea al arrancar si no existe. Sin ellas no se crea ninguno; si la contraseña no cumple la política de HU-1, la aplicación no arranca |
 
 Generar un secreto (una sola vez, y usar el mismo en ambos servicios):
 
@@ -46,16 +48,49 @@ openssl rand -base64 48
 
 ## Ejecución
 
+No hace falta instalar Gradle: `./gradlew` (o `gradlew.bat` en Windows) lo descarga, y si la máquina no tiene
+JDK 21 lo descarga también (plugin `foojay-resolver-convention`).
+
 ```bash
+./gradlew build         # compila y corre las pruebas (H2 en memoria, sin MySQL): 22 pruebas en verde
+
 export JWT_SECRET_BASE64='<secreto Base64>'
 export SPRING_DATASOURCE_USERNAME=... SPRING_DATASOURCE_PASSWORD=...
-gradle bootRun          # http://localhost:8081
+export ADMIN_USERNAME=... ADMIN_PASSWORD=...
+./gradlew bootRun       # http://localhost:8081
 ```
 
-Con Docker: crear un archivo `.env` (ignorado por git) con `JWT_SECRET_BASE64=...` y ejecutar `docker compose up --build`.
+Las pruebas usan el perfil `test` ([`application-test.properties`](src/test/resources/application-test.properties)):
+H2 en memoria y valores que solo sirven para las pruebas.
 
-Al arrancar por primera vez se crea un usuario administrador inicial (ver `AdminBootstrapRunner`);
-cambie su contraseña antes de exponer el servicio.
+Con Docker, solo AuthCore y su MySQL para desarrollo local: cree `.env` (ignorado por git) con las variables de
+[`docker-compose.yml`](docker-compose.yml) y ejecute `docker compose up --build`.
+
+## Ejecutar en local (NetBeans u otro IDE)
+
+NetBeans ejecuta este proyecto con `bootRun` (*Run Project*). Al arrancar se lee el archivo `.env` de la carpeta del
+proyecto, si existe (está en `.gitignore`; nunca se sube), así que no hace falta configurar variables en el IDE.
+Para probar sin MySQL, use H2 en memoria (disponible solo en `bootRun`, no en el jar de producción):
+
+```properties
+JWT_SECRET_BASE64=<secreto Base64 de 48 bytes, el mismo del Domain Service>
+spring.datasource.url=jdbc:h2:mem:authcore;MODE=MySQL;DB_CLOSE_DELAY=-1
+spring.datasource.username=sa
+spring.datasource.password=
+spring.datasource.driver-class-name=org.h2.Driver
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=<8+ caracteres, con letras y números>
+```
+
+Para usar su MySQL local, cambie las líneas `spring.datasource.*` por `SPRING_DATASOURCE_URL`,
+`SPRING_DATASOURCE_USERNAME` y `SPRING_DATASOURCE_PASSWORD`, y quite las de H2.
+
+## Desplegar en AWS
+
+El despliegue de todo Chronos (MySQL, AuthCore y Domain Service en una instancia EC2 con Docker Compose) está en
+[`despliegue/` del Domain Service](https://github.com/Jhorm4nnn/Chronos-Domain-Service/tree/main/despliegue), con
+su guía en el README de ese repositorio. Este repositorio aporta su [`Dockerfile`](Dockerfile).
 
 ## Proyecto Chronos — repositorios relacionados
 
