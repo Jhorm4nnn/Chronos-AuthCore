@@ -113,6 +113,17 @@ class AuthApiTest {
     }
 
     @Test
+    void elNavegadorPuedeLlamarAlLoginDesdeOtroOrigen() throws Exception {
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options("/api/auth/login")
+                        .header("Origin", "http://localhost:8082")
+                        .header("Access-Control-Request-Method", "POST")
+                        .header("Access-Control-Request-Headers", "Content-Type"))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.header()
+                        .string("Access-Control-Allow-Origin", "http://localhost:8082"));
+    }
+
+    @Test
     void loginInvalidoDa401() throws Exception {
         postJson("/api/auth/login", "{\"username\":\"nadie\",\"password\":\"Clave1234\"}").andExpect(status().isUnauthorized());
     }
