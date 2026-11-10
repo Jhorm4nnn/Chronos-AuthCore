@@ -76,6 +76,14 @@ class AuthApiTest {
     }
 
     @Test
+    void registrarConUnaContrasenaDebilDa400() throws Exception {
+        for (String debil : new String[] {"Corta12", "soloLetrasLargas", "1234567890"}) {
+            postJson("/api/auth/register", "{\"username\":\"" + usuarioNuevo() + "\",\"password\":\"" + debil + "\"}")
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
     void registrarDosVecesElMismoUsuarioDa409() throws Exception {
         String json = "{\"username\":\"" + usuarioNuevo() + "\",\"password\":\"Clave1234\"}";
         postJson("/api/auth/register", json).andExpect(status().isCreated());
