@@ -4,7 +4,7 @@ Servicio de autenticación del proyecto **Chronos** (Ingeniería del Software II
 Registra usuarios, autentica con BCrypt y emite un **JWT firmado (HS384)** que el
 [Chronos-Domain-Service](https://github.com/Jhorm4nnn/Chronos-Domain-Service) valida localmente con el mismo secreto.
 
-Java 21 · Spring Boot 4.1.1 · Spring Security · Gradle 9.9 (wrapper) · MySQL · jjwt 0.12.6 · arquitectura hexagonal
+Java 21 · Spring Boot 4.1.1 · Spring Security · Gradle 8.14 (wrapper; NetBeans 25 aún no soporta Gradle 9) · MySQL · jjwt 0.12.6 · arquitectura hexagonal
 (paquete `com.pamplona.authcore`).
 
 ## Historias de usuario (HU-1 a HU-7)
@@ -91,6 +91,13 @@ Para usar su MySQL local, cambie las líneas `spring.datasource.*` por `SPRING_D
 El despliegue de todo Chronos (MySQL, AuthCore y Domain Service en una instancia EC2 con Docker Compose) está en
 [`despliegue/` del Domain Service](https://github.com/Jhorm4nnn/Chronos-Domain-Service/tree/main/despliegue), con
 su guía en el README de ese repositorio. Este repositorio aporta su [`Dockerfile`](Dockerfile).
+
+## Gestión del proyecto
+
+El tablero de Trello del proyecto (backlog, sprints e historias de los dos servicios) es
+[Chronos · Sistema de Turnos (Grupo 5)](https://trello.com/b/JqZOzIz4/chronos-sistema-de-turnos-grupo-5); su
+organización está documentada en
+[`docs/gestion/` del Domain Service](https://github.com/Jhorm4nnn/Chronos-Domain-Service/blob/main/docs/gestion/tablero-trello.md).
 
 ## Proyecto Chronos — repositorios relacionados
 
